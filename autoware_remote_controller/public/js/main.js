@@ -145,7 +145,7 @@ function deviceChange() {
     deviceList.disabled = true;
     // 現時点での Firefox(v39) では sourceId のオプションは無視される
     var constraints = {
-      audio: false,
+      audio: true,
       video: {
         optional: [{ sourceId: deviceId }]
       }
@@ -270,8 +270,12 @@ function start() {
   pc.onicecandidate = function (evt) {
     if (evt.candidate)
       signalingChannel.send(JSON.stringify({ candidate: evt.candidate }));
-    console.log('candidate', evt.candidate);
-    console.log(pc.getConfiguration());
+    try {
+      console.log('candidate', evt.candidate);
+      console.log(pc.getConfiguration());
+    }
+    catch (e) {
+    }
   };
 
   pc.onnegotiationneeded = function () {

@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1" />
-  <title>WebRTC マルチストリーム サンプル</title>
+  <title>Autoware</title>
+  <link rel="shortcut icon" href="/img/autoware_icon.ico">
 
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/css/main.css" />
@@ -25,19 +26,18 @@
         </div>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown" id="ddJoinRoom">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="btnJoinRoom">部屋に参加<b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="btnJoinRoom">CONNECT<b class="caret"></b></a>
             <ul class="dropdown-menu" id="ddmJoinRoom" style="padding: 15px;min-width: 350px;">
               <li>
                 <div class="row">
                   <div class="col-md-12">
                     <form class="form" role="form" id="formJoinRoom">
                       <div class="form-group">
-                        <label for="txtRoomName" class="control-label">参加する部屋名 (GUID形式のみ)</label>
-                        <input type="text" pattern="^[A-Fa-f0-9]{8}(?:-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}$" class="form-control" id="txtRoomName" required>
-                        <button type="button" class="btn btn-default btn-sm" id="btnGenerateRoomName">部屋名生成</button>
+                        <label for="txtRoomName" class="control-label">CONNECT VEHICLE (ex. vehicle1)</label>
+                        <input type="text" class="form-control" id="txtRoomName" required>
                       </div>
                       <div class="form-group">
-                        <button type="submit" class="btn btn-success btn-block">参加</button>
+                        <button type="submit" class="btn btn-success btn-block">CONNECT</button>
                       </div>
                     </form>
                   </div>
@@ -56,36 +56,60 @@
   <!-- メインUI -->
   <div class="container" id="container">
     <div id="localContainer" class="userContainer">
-      <span class="userName">ローカルピア(自分)のストリーム</span>
+      <span class="userName">Local Peer Stream</span>
       <div class="userStreamContainer">
         <div class="streamItemContainer">
-          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream1" data-no="1" title="このストリームを削除します"></span><br />
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream1" data-no="1" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream1" data-no="1">
             <span class="glyphicon glyphicon-remove r45"></span><br />
-            <span>ストリームを追加</span>
+            <span>Add Stream</span>
           </button>
           <video id="localView1"></video>
         </div>
         <div class="streamItemContainer">
-          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream2" data-no="2" title="このストリームを削除します"></span><br />
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream2" data-no="2" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream2" data-no="2">
             <span class="glyphicon glyphicon-remove r45"></span><br />
-            <span>ストリームを追加</span>
+            <span>Add Stream</span>
           </button>
           <video id="localView2"></video>
         </div>
         <div class="streamItemContainer">
-          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream3" data-no="3" title="このストリームを削除します"></span><br />
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream3" data-no="3" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream3" data-no="3">
             <span class="glyphicon glyphicon-remove r45"></span><br />
-            <span>ストリームを追加</span>
+            <span>Add Stream</span>
           </button>
           <video id="localView3"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream4" data-no="4" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream4" data-no="4">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView4"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream5" data-no="5" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream5" data-no="5">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView5"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream6" data-no="6" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream6" data-no="6">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView6"></video>
         </div>
       </div>
     </div>
     <div id="remoteContainer" class="userContainer">
-      <span class="userName">リモートピア(相手)のストリーム</span>
+      <span class="userName">Remote Peer Stream</span>
       <div class="userStreamContainer">
         <div class="streamItemContainer">
           <video id="remoteView1"></video>
@@ -95,6 +119,15 @@
         </div>
         <div class="streamItemContainer">
           <video id="remoteView3"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView4"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView5"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView6"></video>
         </div>
       </div>
     </div>
@@ -106,26 +139,26 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">キャプチャーデバイスを選択してください (ビデオのみ)</h4>
+          <h4 class="modal-title" id="myModalLabel">Select Capture Device</h4>
         </div>
         <div class="modal-body">
           <div class="form-group" id="othorSelectDevice">
-            <label for="ddDevices" class="control-label">デバイス</label>
+            <label for="ddDevices" class="control-label">Device</label>
             <select class="input-large form-control" id="deviceList"></select>
           </div>
           <div class="form-group" id="firefoxSelectDevice">
-            <span id="ffMessage" class="control-label">"デバイスを選択"ボタンをクリックし、左上にでるポップアップでデバイスを選択してください。<br /><button id="btnFfSelectDevice">デバイスを選択</button></span>
+            <span id="ffMessage" class="control-label">Click the Select Device.<br /><button id="btnFfSelectDevice">Select Device</button></span>
           </div>
           <div class="form-group">
-            <label for="streamPreview control-label">プレビュー</label>
+            <label for="streamPreview control-label">Preview</label>
             <div class="form-control" id="devicePreview">
               <video id="streamPreview"></video>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" id="btnDialogAddStream" class="btn btn-primary">このストリームを追加</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          <button type="button" id="btnDialogAddStream" class="btn btn-primary">Add Stream</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -136,14 +169,14 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          部屋名：<input type="text" id="dialogRoomName" size="36" readonly />
+          CONNECTION:<input type="text" id="dialogRoomName" size="36" readonly />
         </div>
         <div class="modal-body">
           <p id="messageText"></p>
           <span id="waitingIcon" class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
         </div>
         <div class="modal-footer" id="messageDialogFooter">
-          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
         </div>
       </div>
     </div>
