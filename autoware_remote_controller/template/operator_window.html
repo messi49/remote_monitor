@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1" />
+  <title>Autoware</title>
+  <link rel="shortcut icon" href="/img/autoware_icon.ico">
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="/js/webrtc_polyfill.js"></script>
+  <script src="/js/jquery-2.1.4.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="socket.io/socket.io.js"></script>
+  <script src="/js/uuid.core.js"></script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="navbar-static-top bs-docs-nav">
+    <div class="navbar-inner">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#"></a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown" id="ddJoinRoom">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="btnJoinRoom">CONNECT<b class="caret"></b></a>
+            <ul class="dropdown-menu" id="ddmJoinRoom" style="padding: 15px;min-width: 350px;">
+              <li>
+                <div class="row">
+                  <div class="col-md-12">
+                    <form class="form" role="form" id="formJoinRoom">
+                      <div class="form-group">
+                        <label for="txtRoomName" class="control-label">CONNECT VEHICLE (ex. vehicle1)</label>
+                        <input type="text" class="form-control" id="txtRoomName" required>
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-block">CONNECT</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- UIマスク -->
+  <div id="maskPanel"></div>
+
+  <!-- メインUI -->
+  <div class="container" id="container">
+    <div id="localContainer" class="userContainer">
+      <span class="userName">Local Peer Stream</span>
+      <div class="userStreamContainer">
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream1" data-no="1" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream1" data-no="1">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView1"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream2" data-no="2" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream2" data-no="2">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView2"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream3" data-no="3" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream3" data-no="3">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView3"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream4" data-no="4" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream4" data-no="4">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView4"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream5" data-no="5" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream5" data-no="5">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView5"></video>
+        </div>
+        <div class="streamItemContainer">
+          <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream6" data-no="6" title="DELETE"></span><br />
+          <button class="btnAddStream" id="btnAddStream6" data-no="6">
+            <span class="glyphicon glyphicon-remove r45"></span><br />
+            <span>Add Stream</span>
+          </button>
+          <video id="localView6"></video>
+        </div>
+      </div>
+    </div>
+    <div id="remoteContainer" class="userContainer">
+      <span class="userName">Remote Peer Stream</span>
+      <div class="userStreamContainer">
+        <div class="streamItemContainer">
+          <video id="remoteView1"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView2"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView3"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView4"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView5"></video>
+        </div>
+        <div class="streamItemContainer">
+          <video id="remoteView6"></video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 追加ストリームを選択するダイアログ -->
+  <div class="modal fade" id="selectDeviceDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Select Capture Device</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" id="othorSelectDevice">
+            <label for="ddDevices" class="control-label">Device</label>
+            <select class="input-large form-control" id="deviceList"></select>
+          </div>
+          <div class="form-group" id="firefoxSelectDevice">
+            <span id="ffMessage" class="control-label">"デバイスを選択"ボタンをクリックし、左上にでるポップアップでデバイスを選択してください。<br /><button id="btnFfSelectDevice">Select Device</button></span>
+          </div>
+          <div class="form-group">
+            <label for="streamPreview control-label">Preview</label>
+            <div class="form-control" id="devicePreview">
+              <video id="streamPreview"></video>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnDialogAddStream" class="btn btn-primary">Add Stream</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メッセージダイアログ -->
+  <div class="modal fade" id="messageDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          CONNECTION:<input type="text" id="dialogRoomName" size="36" readonly />
+        </div>
+        <div class="modal-body">
+          <p id="messageText"></p>
+          <span id="waitingIcon" class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </div>
+        <div class="modal-footer" id="messageDialogFooter">
+          <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+</html>

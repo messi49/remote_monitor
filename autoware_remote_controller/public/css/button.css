@@ -1,0 +1,42 @@
+.flat_ss {
+    color: #484848;
+    display: inline-block;
+    height: 50px;
+    font-size: 25px;
+    vertical-align: middle;
+    background: #FFFFFF;
+    text-decoration: none;
+    margin: 1em;
+}
+
+.flat_ss .iconback{
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    color: white;
+}
+.flat_ss .iconback .fa{
+    font-size: 25px;
+    line-height: 50px;
+}
+.flat_ss .iconback .fa{
+	transition: .3s;
+}
+
+.flat_ss .btnttl{
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+    vertical-align:middle;
+}
+
+.flat_ss .car {background:#00a3e0}
+.flat_ss .operator {background:#00fa9a}
+.flat_ss .fdly {background:#7ece46}
+.flat_ss .pkt {background:#fd7171}
+.flat_ss:hover .iconback .fa{
+    -webkit-transform: rotateX(360deg);
+    -ms-transform: rotateX(360deg);
+    transform: rotateX(360deg);
+}
