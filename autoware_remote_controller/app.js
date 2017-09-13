@@ -33,14 +33,12 @@ io.on('connection', function (socket) {
   });
 
   socket.on('join room', function (roomName) {
-    console.log('ROOM NAME');
-    console.log(roomName);
     if (roomName != null) {
       socket.join(roomName);
       socket.roomName = roomName;
       socket.send('{"roomName": "' + roomName + '"}');
-      var roomMemberCount = Object.keys(io.nsps['/'].adapter.rooms[roomName]).length;
-      console.log("roomMemberCount = " + Object.keys(io.nsps['/'].adapter.rooms[roomName]));
+      console.log("roomName: "  + roomName);
+      var roomMemberCount = io.sockets.adapter.rooms[roomName].length;
       if (roomMemberCount === 2) {
         process.nextTick(function () {
           io.sockets.in(roomName).send('ready');

@@ -1,10 +1,10 @@
-var MESSAGE_WAIT = '部屋に参加しました。リモートピアが参加するのを待機しています。';
-var MESSAGE_REMOTE_LEAVE = 'リモートピアが退室しました。<br>リモートピアが参加するのを待機してます。';
-var MESSAGE_EXIST_STREAM = '指定したストリームは既に追加されています。';
-var MESSAGE_OVER = '指定した部屋にはすでに２人入っているため入室できませんでした。(1対1のみ)';
-var MESSAGE_ROOMNAME_ERROR = '設定した部屋名が正しくありません。<br>(GUID形式のフォーマット"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"のみ)';
-var MESSAGE_NOTFOUND_DEVICE = '使用可能なビデオキャプチャーデバイスがありませんでした。<br>(このサンプルアプリではビデオのみ使用します。)'
-var MESSAGE_SIGNALING_SERVER_ERROR = 'シグナリングサーバーに接続できません。';
+var MESSAGE_WAIT = 'Join the connection. Wait for new peer.';
+var MESSAGE_REMOTE_LEAVE = 'Remote peer left. Wait for new peer.';
+var MESSAGE_EXIST_STREAM = 'Your selected stream is already in use.';
+var MESSAGE_OVER = 'Connection is empty. (one-on-one)';
+var MESSAGE_ROOMNAME_ERROR = 'Connection name is not correct.';
+var MESSAGE_NOTFOUND_DEVICE = 'Camera not found.)'
+var MESSAGE_SIGNALING_SERVER_ERROR = 'Can not access signal server.';
 
 // Development
 var configuration = { iceServers: [{ url: 'stun:stun.l.google.com:19302'}, {urls: "stun:23.21.150.121" }] };
@@ -28,10 +28,10 @@ var $messageDialog = $('#messageDialog');
 var $selectDeviceDialog = $('#selectDeviceDialog');
 
 // ---------------------------
-// UI 処理
+// UI Process
 // ---------------------------
 
-// イベントリスナー設定 -------
+// Set Event Listener -------
 
 btnJoinRoom.addEventListener('click', setFocusTxtRoomName);
 // btnGenerateRoomName.addEventListener('click', generateRoomName);
@@ -44,7 +44,6 @@ txtRoomName.onkeydown = function (evt) {
 }
 //btnJoin.onclick = joinRoom;
 for (var i = 1; i <= MAX_CAMERA_NUM; i++) {
-  console.log("STREAM: " + i)
   document.getElementById('btnAddStream' + i).addEventListener('click', showSelectDeviceDialog);
   document.getElementById('btnRemoveStream' + i).addEventListener('click', removeStream);
 }
@@ -167,7 +166,7 @@ function removeStream() {
   actionName = 'remove';
   localPositionNo = this.dataset.no;
   var stream = document.getElementById('localView' + localPositionNo).srcObject;
-  stream.stop();
+  // stream.stop();
   if (isFirefox) {
     mediaSenders.forEach(function (sender) {
       pc.removeTrack(sender);
@@ -189,7 +188,7 @@ function showMessageDialog(message, isWaiting, roomName) {
 
 function clearStream(video) {
   if (video.srcObject) {
-    video.srcObject.stop();
+    // video.srcObject.stop();
     video.srcObject = null;
 
   }
@@ -206,7 +205,7 @@ function clearStreamAll() {
 
 
 // ---------------------------
-// シグナリング 処理
+// Signaling Process
 // ---------------------------
 
 signalingChannel.on('message', function (message) {
@@ -258,7 +257,7 @@ signalingChannel.on('message', function (message) {
 
 
 // ---------------------------
-// WebRTC 処理
+// WebRTC Process
 // ---------------------------
 
 function start() {
