@@ -20,6 +20,10 @@ header {
   width: 250px;
 }
 
+.navbar-nav>li>a {
+  line-height: 30px;
+}
+
 /* VEHICLE */
 .row {
   height: 500px;
@@ -36,9 +40,9 @@ header {
 #maskPanel {
   position: absolute;
   width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
   left: 0;
-  top: 50px;
+  top: 60px;
   background: rgba(0, 0, 0, .9);
   z-index: 5;
 }

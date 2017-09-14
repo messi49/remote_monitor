@@ -44,8 +44,12 @@ txtRoomName.onkeydown = function (evt) {
 }
 //btnJoin.onclick = joinRoom;
 for (var i = 1; i <= MAX_CAMERA_NUM; i++) {
-  document.getElementById('btnAddStream' + i).addEventListener('click', showSelectDeviceDialog);
-  document.getElementById('btnRemoveStream' + i).addEventListener('click', removeStream);
+  try {
+    document.getElementById('btnAddStream' + i).addEventListener('click', showSelectDeviceDialog);
+    document.getElementById('btnRemoveStream' + i).addEventListener('click', removeStream);
+  }
+  catch (e) {
+  }
 }
 $messageDialog.on('shown.bs.modal', setFocusDialogRoomName);
 $selectDeviceDialog.on('show.bs.modal', deviceChange);
