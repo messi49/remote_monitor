@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var mqtt = require('mqtt')
+var mqtt_client  = mqtt.connect('mqtt://52.185.144.80:1883')
 
 app.use(express.static('public'));
 
@@ -25,6 +27,9 @@ http.listen(9000, function () {
   console.log('listening on *:9000');
 });
 
+mqtt_client.on('connect', function () {
+  mqtt_client.subscribe('vehicle/#')
+});
 
 io.on('connection', function (socket) {
   socket.on('disconnect', function () {
@@ -57,4 +62,31 @@ io.on('connection', function (socket) {
       socket.broadcast.to(socket.roomName).send(message);
     }
   });
+
+  mqtt_client.on('message', function (topic, message) {
+    try {
+      var split_topic = topic.split("/");
+      if (socket.roomName != null && socket.roomName == split_topic[1]) {
+        console.log(topic + ": " + message.toString())
+        var send_topic_name = "";
+        for (var i = 2; i < split_topic.length; i++) {
+          send_topic_name += "/";
+          send_topic_name += split_topic[i];
+        }
+        var msg = {};
+        msg.vehicle_info = {};
+        msg.vehicle_info.topic = send_topic_name;
+        msg.vehicle_info.message = message.toString();
+        console.log(JSON.stringify(msg));
+        socket.send(JSON.stringify(msg));
+      }
+      else {
+        console.log("[NULL] " + topic + message.toString());
+        console.log("roomName: " + socket.roomName);
+      }
+    }
+    catch (e) {
+      console.error("mqtt_pubscriber", e.message);
+    }
+  })
 });

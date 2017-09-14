@@ -207,7 +207,6 @@ function clearStreamAll() {
   }
 }
 
-
 // ---------------------------
 // Signaling Process
 // ---------------------------
@@ -229,7 +228,6 @@ signalingChannel.on('message', function (message) {
     var message = JSON.parse(message);
     if (message.roomName) {
       // 部屋に参加した。
-      console.log("JOIN ROOM");
       roomName = message.roomName;
       dialogRoomName.value = roomName;
       showMessageDialog(MESSAGE_WAIT, true);
@@ -251,6 +249,8 @@ signalingChannel.on('message', function (message) {
           signalingChannel.send(JSON.stringify({ sdp: pc.localDescription }));
         })
         .catch(logError);
+      } else if (message.vehicle_info) {
+        console.log(message);
       } else
         pc.setRemoteDescription(desc).catch(logError);
     } else if (message.candidate) {
