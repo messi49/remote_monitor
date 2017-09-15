@@ -1,11 +1,27 @@
+// Remote UI
 
 window.onload = function() {
-  document.getElementById('vehicle_steering').src = RotateImage("/img/steering.png", "image/png", 0);
+  setSteeringAngle(0);
+  setSpeed(0);
+  setRPM(0);
+  setGear("P");
+
+  var count = 0;
+  var countup = function(){
+    setSteeringAngle(count);
+    setSpeed(count);
+		setRPM(1000*count);
+    setGear("D");
+    setAccelStroke(count, 100);
+    setBrakeStroke(count, 100);
+    setSteeringPosition(count, 100);
+    count++;
+  }
+  setInterval(countup, 10);
 }
 
-
 // Rotate Image
-function RotateImage(image_src, mime_type, rotate_angle) {
+function rotateImage(image_src, mime_type, angle) {
   var img = new Image();
   img.src = image_src;
 
@@ -17,7 +33,6 @@ function RotateImage(image_src, mime_type, rotate_angle) {
     min_size = img.height;
   }
 
-  angle = rotate_angle * Math.PI / 180 % 360;
   var newCanvas = document.createElement('canvas');
   newCanvas.width  = min_size;
   newCanvas.height = min_size;
@@ -30,9 +45,113 @@ function RotateImage(image_src, mime_type, rotate_angle) {
   return newCanvas.toDataURL(mime_type);
 }
 
-"use strict";
+// Set Steering Angle
+function setSteeringAngle(angle, max_angle) {
+  var target_angle = 0;
+  if (max_angle != null) {
+    if (max_angle < angle) {
+      angle = max_angle;
+    }
+    else if (angle < -max_angle) {
+      angle = -max_angle;
+    }
+  }
+  target_angle = angle * Math.PI / 180 % 360;
+
+  document.getElementById('vehicle_steering').src = rotateImage("/img/steering.png", "image/png", target_angle);
+}
+
+// Set Speed
+function setSpeed(speed) {
+  var target_speed = 0;
+  if (speed < 0) {
+    target_speed = 0;
+  }
+  else if (220 < speed) {
+    target_speed = 220;
+  }
+  else {
+    target_speed = speed;
+  }
+  speedMeter.setValue(target_speed);
+}
+
+// Set RPM
+function setRPM(rpm) {
+  var target_rpm = 0;
+  if (rpm < 0) {
+    target_rpm = 0;
+  }
+  else if (8000 < rpm) {
+    target_rpm = 8000;
+  }
+  else {
+    target_rpm = rpm;
+  }
+  rpmMeter.setValue(target_rpm);
+}
+
+// Set Gear
+function setGear(gear) {
+  gearMeter.innerHTML = gear;
+}
+
+// Set Accel Stroke
+function setAccelStroke(value, max_value) {
+  var accel_bar = document.getElementById('accel_bar');
+  var target_value = 0;
+  if (max_value != null) {
+    target_value = 100 * value / max_value;
+  }
+  else {
+    target_value = value;
+  }
+  accel_bar.value = target_value;
+}
+
+// Set Brake Stroke
+function setBrakeStroke(value, max_value) {
+  var brake_bar = document.getElementById('brake_bar');
+  var target_value = 0;
+  if (max_value != null) {
+    target_value = 100 * value / max_value;
+  }
+  else {
+    target_value = value;
+  }
+  brake_bar.value = target_value;
+}
+
+// Set Steering position
+function setSteeringPosition(angle, max_angle) {
+  var fill = document.querySelector('.fill');
+  var target_angle_ratio = 50;
+  if (angle == 0) {
+    target_angle_ratio = 50;
+  }
+  else if (0 < angle) {
+    if (max_angle < angle) {
+      target_angle_ratio = 100;
+    }
+    else {
+      target_angle_ratio = 50 + 50 * (angle / max_angle);
+    }
+  }
+  else if (angle < 0) {
+    if (angle < -max_angle) {
+      target_angle_ratio = 0;
+    }
+    else {
+      target_angle_ratio = 50 - 50 * (angle / max_angle);
+    }
+  }
+  fill.style.width = target_angle_ratio + '%';
+}
 
 // METER
+var rpmMeter;
+var speedMeter;
+var gearMeter
 
 var Meter = function Meter($elm, config) {
 
@@ -161,7 +280,7 @@ var Meter = function Meter($elm, config) {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-	var rpmMeter = new Meter(document.querySelector(".meter--rpm"), {
+	rpmMeter = new Meter(document.querySelector(".meter--rpm"), {
 		value: 6.3,
 		valueMin: 0,
 		valueMax: 8000,
@@ -179,8 +298,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		valueRed: 6500
 	});
 
-	var speedMeter = new Meter(document.querySelector(".meter--speed"), {
-		value: 203,
+	speedMeter = new Meter(document.querySelector(".meter--speed"), {
+		value: 0,
 		valueMin: 0,
 		valueMax: 220,
 		valueStep: 20,
@@ -196,279 +315,5 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	var gearMeter = document.querySelector('.meter--gear div');
-
-	// USER INPUTS
-
-	document.onkeydown = keyDown;
-	document.onkeyup = keyUp;
-
-	function keyDown(e) {
-
-		e = e || window.event;
-
-		if (e.keyCode == '38') {
-			// up arrow
-			isAccelerating = true;
-		} else if (e.keyCode == '40') {
-			// down arrow
-			isBraking = true;
-		} else if (e.keyCode == '37') {// left arrow
-		} else if (e.keyCode == '39') {// right arrow
-			}
-	}
-
-	function keyUp(e) {
-
-		e = e || window.event;
-
-		if (e.keyCode == '38') {
-			// up arrow
-			isAccelerating = false;
-		} else if (e.keyCode == '40') {
-			// down arrow
-			isBraking = false;
-		} else if (e.keyCode == '37') {
-			// left arrow
-			gearDown();
-		} else if (e.keyCode == '39') {
-			// right arrow
-			gearUp();
-		}
-	}
-
-	function gearUp() {
-		if (gear < gears.length - 1) {
-			gear++;
-			gearMeter.innerHTML = gear;
-		}
-	}
-
-	function gearDown() {
-		if (gear > 1) {
-			gear--;
-			gearMeter.innerHTML = gear;
-		}
-	}
-
-	// VEHICLE CONFIG
-
-	var mass = 1000,
-	    cx = 0.28,
-	    gears = [0, 0.4, 0.7, 1.0, 1.3, 1.5, 1.68],
-	    transmitionRatio = 0.17,
-	    transmitionLoss = 0.15,
-	    wheelDiameter = 0.5,
-	    brakeTorqueMax = 300,
-	    gear = 1,
-	    speed = 10,
-	    // in km/h
-	overallRatio = undefined,
-	    wheelRpm = undefined,
-	    wheelTorque = undefined,
-	    brakeTorque = undefined,
-	    resistance = undefined,
-	    acceleration = undefined;
-
-	// MOTOR CONFIG
-
-	var rpmIdle = 1200,
-	    rpmMax = 8000,
-	    rpmRedzone = 6500,
-	    torqueMin = 20,
-	    // in m.kg
-	torqueMax = 45,
-	    // in m.kg
-
-	torque = undefined,
-	    rpm = 0,
-	    isAccelerating = false,
-	    isBraking = false;
-
-	// Helper functions
-
-	var torqueByRpm = function torqueByRpm(rpm) {
-		var torque = torqueMin + rpm / rpmMax * (torqueMax - torqueMin);
-		return torque;
-	};
-
-	function kmh2ms(speed) {
-		// Km/h to m/s
-		return speed / 3.6;
-	}
-
-	// Physics 101
-	/*
-  * P = C w
-  * P(hp) = C(m.kg) w(rpm) / 716
-  *
-  * F = m.a
-  * Force(newton) = mass(kg) * acceleration (m/s)
-  *
-  * a = Cr / (r.m)
-  * acceleration (m/s) = torqueWheel (m.kg) / (wheelRadius (m) * mass (kg))
-  */
-
-	var lastTime = new Date().getTime(),
-	    nowTime = undefined,
-	    delta = undefined;
-
-	// MAIN LOOP
-
-	(function loop() {
-		window.requestAnimationFrame(loop);
-
-		// Delta time
-		nowTime = new Date().getTime();
-		delta = (nowTime - lastTime) / 1000; // in seconds
-		lastTime = nowTime;
-
-		var oldSpeed = speed,
-		    oldRpm = rpm;
-
-		// Torque
-
-		if (isAccelerating && rpm < rpmMax) {
-			// Gas!
-			torque = torqueByRpm(rpm);
-		} else {
-			torque = -(rpm * rpm / 1000000);
-		}
-
-		if (isBraking) {
-			// Ooops...
-			brakeTorque = brakeTorqueMax;
-		} else {
-			brakeTorque = 0;
-		}
-
-		overallRatio = transmitionRatio * gears[gear];
-		wheelTorque = torque / overallRatio - brakeTorque;
-
-		acceleration = 20 * wheelTorque / (wheelDiameter * mass / 2);
-		resistance = 0.5 * 1.2 * cx * kmh2ms(speed) ^ 2;
-
-		// Speed
-
-		speed += (acceleration - resistance) * delta;
-
-		if (speed < 0) {
-			speed = 0;
-		}
-
-		wheelRpm = speed / (60 * (Math.PI * wheelDiameter / 1000));
-		rpm = speed / (60 * transmitionRatio * gears[gear] * (Math.PI * wheelDiameter / 1000));
-
-		// Idle
-		if (rpm < rpmIdle) {
-			rpm = oldRpm;
-			speed = oldSpeed;
-		}
-
-		// Gear shifter
-		if (rpm > rpmRedzone) {
-			gearMeter.classList.add('redzone');
-		} else {
-			gearMeter.classList.remove('redzone');
-		}
-
-		// Update GUI
-
-		speedMeter.setValue(speed);
-		rpmMeter.setValue(rpm);
-
-		// Update engine sound
-		if (source) {
-			source.playbackRate.value = rpm / 4000;
-		}
-
-		if (source2) {
-			source2.playbackRate.value = speed / 500;
-		}
-	})();
-
-	///////////////////////////////////////////////
-	// WEBAUDIO
-
-	// Courtesy of https://mdn.github.io/decode-audio-data/
-
-	// define variables
-
-	var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-	var source, source2, gainNode;
-	var songLength;
-
-	var loader = document.querySelector('.loader');
-	var btnVolume = document.querySelector('.btn-volume');
-
-	// use XHR to load an audio track, and
-	// decodeAudioData to decode it and stick it in a buffer.
-	// Then we put the buffer into the source
-
-	function getData() {
-		source = audioCtx.createBufferSource();
-		source2 = audioCtx.createBufferSource();
-		var request = new XMLHttpRequest();
-
-		request.open('GET', 'https://mdn.github.io/decode-audio-data/viper.ogg', true);
-		request.responseType = 'arraybuffer';
-
-		request.onload = function () {
-			var audioData = request.response;
-
-			audioCtx.decodeAudioData(audioData, function (buffer) {
-				var myBuffer = buffer; // local buffer ?
-				var myBuffer2 = buffer;
-				//				songLength = buffer.duration; // in seconds
-				source.buffer = myBuffer;
-				source2.buffer = myBuffer2;
-
-				source.loop = true;
-				source2.loop = true;
-
-				// Hacky granular engine sound!
-				source.loopStart = 0.605;
-				source.loopEnd = 0.650;
-
-				source2.loopStart = 0.605;
-				source2.loopEnd = 0.650;
-
-				source.playbackRate.value = 1;
-				source2.playbackRate.value = 1;
-
-				// Create a gain node.
-				gainNode = audioCtx.createGain();
-				// Connect the source to the gain node.
-				source.connect(gainNode);
-				source2.connect(gainNode);
-				// Connect the gain node to the destination.
-				gainNode.connect(audioCtx.destination);
-
-				// Remove loader
-				loader.classList.remove('active');
-			}, function (e) {
-				"Error with decoding audio data" + e.err;
-			});
-		};
-
-		request.send();
-	}
-
-	// wire up buttons
-
-	btnVolume.onclick = function () {
-		this.classList.toggle('active');
-
-		if (this.classList.contains('active')) {
-			gainNode.gain.value = 1;
-		} else {
-			gainNode.gain.value = 0;
-		}
-	};
-
-	// Load the sample
-	getData();
-	// Launch loop playing
-	source.start(0);
-	source2.start(0);
+	gearMeter = document.querySelector('.meter--gear div');
 });

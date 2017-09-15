@@ -10,13 +10,14 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/speed_meters.css" />
+  <link rel="stylesheet" href="/css/bar.css" />
+  <link rel="stylesheet" href="/css/button.css" />
 
-  <script src="/js/webrtc_polyfill.js"></script>
   <script src="/js/jquery-2.1.4.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="socket.io/socket.io.js"></script>
+  <script src="/js/webrtc_polyfill.js"></script>
   <script src="/js/uuid.core.js"></script>
-
   <script src="/js/remote_ui.js"></script>
 </head>
 <body>
@@ -54,7 +55,7 @@
     </div>
   </header>
 
-  <div id="maskPanel"></div>
+  <!-- <div id="maskPanel"></div> -->
 
   <!-- UI -->
   <div class="container" id="container">
@@ -166,14 +167,24 @@
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div align="left" style="margin-left: 10px">
           <h4>Accel</h4>
+          <progress id="accel_bar" value="0" max="100"></progress>
           <h4>Brake</h4>
-          <h4>Stter</h4>
+          <progress id="brake_bar" value="0" max="100"></progress>
+          <h4>Steer</h4>
+          <div class="seekbar">
+            <div class="fill"></div>
+            <div class="handle"></div>
+          </div>
         </div>
       </div>
 
       <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-        <button>Emergency Stop</button>
-        <button>Remote Control</button>
+        <div class="onoffswitch">
+          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+          <label class="onoffswitch-label" for="myonoffswitch">
+              <span class="onoffswitch-inner"></span>
+          </label>
+      </div>
       </div>
     </div>
   </div>
