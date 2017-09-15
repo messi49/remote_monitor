@@ -9,11 +9,15 @@
 
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/speed_meters.css" />
+
   <script src="/js/webrtc_polyfill.js"></script>
   <script src="/js/jquery-2.1.4.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="socket.io/socket.io.js"></script>
   <script src="/js/uuid.core.js"></script>
+
+  <script src="/js/remote_ui.js"></script>
 </head>
 <body>
 
@@ -56,20 +60,19 @@
   <div class="container" id="container">
     <!-- First row -->
     <div class="row row-eq-height">
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div align="left" style="margin-left: 10px">
           <h2><u>Vehicle Info</u><h2>
           <h3>Car Speed: 0 km/h</h3>
           <h3>Target Speed: 0 km/h</h3>
           <h3>Next Target Speed: 0 km/h</h3>
           <h3>Next Target Speed: 0 km/h</h3>
-          <h3>Status: Go</h3>
-          <h3>Gear: P</h3>
+          <h3>State: Go</h3>
           <h3>Mode: Manual</h3>
         </div>
       </div>
 
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream2" data-no="2" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream2" data-no="2">
@@ -80,7 +83,7 @@
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream5" data-no="5" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream5" data-no="5">
@@ -91,7 +94,7 @@
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream6" data-no="6" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream6" data-no="6">
@@ -106,7 +109,7 @@
 
     <!-- UI Second row -->
     <div class="row row-eq-height">
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream3" data-no="3" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream3" data-no="3">
@@ -117,7 +120,7 @@
         </div>
       </div>
 
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream1" data-no="1" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream1" data-no="1">
@@ -128,7 +131,7 @@
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <span class="btnRemoveStream glyphicon glyphicon-remove" style="display:none" id="btnRemoveStream4" data-no="4" title="DELETE"></span><br />
           <button class="btnAddStream" id="btnAddStream4" data-no="4">
@@ -139,10 +142,38 @@
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
         <div class="streamItemContainer">
           <video id="remoteView1"></video>
         </div>
+      </div>
+    </div>
+
+    <!-- UI Third row -->
+    <div class="row row-eq-height">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <img id="vehicle_steering" src="/img/steering.png"></img>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <div class="dashboard">
+        	<div class="meter meter--rpm meter--big-label"></div>
+        	<div class="meter meter--gear"><div>1</div></div>
+        	<div class="meter meter--speed"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <div align="left" style="margin-left: 10px">
+          <h4>Accel</h4>
+          <h4>Brake</h4>
+          <h4>Stter</h4>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+        <button>Emergency Stop</button>
+        <button>Remote Control</button>
       </div>
     </div>
   </div>

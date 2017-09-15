@@ -1,4 +1,5 @@
 /* GENERAL */
+
 html, body {
   width: 100%;
   height: 100%;
@@ -24,9 +25,17 @@ header {
   line-height: 30px;
 }
 
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
 /* VEHICLE */
+
 .row {
-  height: 500px;
+  width: 100%;
+  height: 17vw;
   margin-bottom: 10px;
 }
 
@@ -34,6 +43,13 @@ header {
   display: flex;
   flex-wrap: wrap;
 }
+
+img#vehicle_steering {
+  height: 100%;
+  margin-left: 3vw;
+  margin: 10px;
+}
+
 
 /*height:calc(100vw * 9 / 16);*/
 
@@ -64,7 +80,6 @@ header {
     -webkit-transform: rotate(0);
     transform: rotate(0);
   }
-
   100% {
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
@@ -82,7 +97,6 @@ header {
     -webkit-transform: rotate(0);
     transform: rotate(0);
   }
-
   100% {
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
@@ -100,7 +114,6 @@ header {
     -webkit-transform: rotate(0);
     transform: rotate(0);
   }
-
   100% {
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
@@ -117,16 +130,16 @@ header {
   animation: rotate 1s linear infinite;
 }
 
-#dialogRoomName{
-  border:none;
+#dialogRoomName {
+  border: none;
 }
 
-#messageText{
-  display:inline;
+#messageText {
+  display: inline;
 }
 
 #container {
-  position:relative;
+  position: relative;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -144,7 +157,7 @@ header {
   padding: 5px;
   height: calc((100% / 2) - 10px);
   background: white;
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
 }
 
 .userName {
@@ -164,11 +177,11 @@ header {
 .streamItemContainer {
   position: relative;
   float: left;
-  margin: 5px;
+  margin: 2px;
   width: 100%;
   height: 100%;
   justify-content: center;
-  box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;
   background: #FFFFFF;
   border: solid #00a3e0;
 }
@@ -207,15 +220,15 @@ video {
   outline: none;
 }
 
-  .btnAddStream:hover {
-    background: #0094ff;
-    color: white;
-  }
+.btnAddStream:hover {
+  background: #0094ff;
+  color: white;
+}
 
-  .btnAddStream:active {
-    background-color: transparent;
-    color: black;
-  }
+.btnAddStream:active {
+  background-color: transparent;
+  color: black;
+}
 
 .btnRemoveStream {
   position: absolute;
