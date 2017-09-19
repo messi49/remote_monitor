@@ -37,6 +37,16 @@ function select_gear(obj) {
   remote_cmd["gear"] = value;
 }
 
+function select_emergency_button(obj) {
+  remote_cmd["emergency"] = remote_cmd["emergency"] == 0 ? 1 : 0;
+  console.log('select_emergency_button => ' + remote_cmd["emergency"]);
+}
+
+function select_mode_button(obj) {
+  remote_cmd["mode"] = remote_cmd["mode"] == 0 ? 1 : 0;
+  console.log('select_mode_button => ' + remote_cmd["mode"]);
+}
+
 // Rotate Image
 function rotateImage(image_src, mime_type, angle) {
   var img = new Image();
