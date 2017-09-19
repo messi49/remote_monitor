@@ -1,4 +1,12 @@
 // Remote UI
+remote_cmd = {
+  "emergency": 0,
+  "steering": 0,
+  "accel": 0,
+  "brake": 0,
+  "gear": 0,
+  "mode": 0,
+}
 
 window.onload = function() {
   setSteeringAngle(0);
@@ -18,6 +26,15 @@ window.onload = function() {
     count++;
   }
   setInterval(countup, 10);
+}
+
+function select_gear(obj) {
+  var idx = obj.selectedIndex;
+  var value = obj.options[idx].value;
+  var text  = obj.options[idx].text;
+
+  console.log('value = ' + value + ', ' + 'text = ' + text);
+  remote_cmd["gear"] = value;
 }
 
 // Rotate Image
