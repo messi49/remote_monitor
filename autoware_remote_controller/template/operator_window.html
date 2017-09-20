@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1" />
@@ -9,12 +10,20 @@
 
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/css/main.css" />
-  <script src="/js/webrtc_polyfill.js"></script>
+  <link rel="stylesheet" href="/css/speed_meters.css" />
+  <link rel="stylesheet" href="/css/bar.css" />
+  <link rel="stylesheet" href="/css/button.css" />
+
   <script src="/js/jquery-2.1.4.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="socket.io/socket.io.js"></script>
+  <script src="/js/webrtc_polyfill.js"></script>
   <script src="/js/uuid.core.js"></script>
+  <script src="/js/utility.js"></script>
+  <script src="/js/remote_ui.js"></script>
+  <script src="/js/gamepad.js"></script>
 </head>
+
 <body>
 
   <!-- Header -->
@@ -50,32 +59,29 @@
     </div>
   </header>
 
-  <div id="maskPanel"></div>
+  <!-- <div id="maskPanel"></div> -->
 
   <!-- UI -->
   <div class="container" id="container">
     <!-- First row -->
     <div class="row row-eq-height">
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div align="left" style="margin-left: 10px">
           <h2><u>Vehicle Info</u><h2>
-          <h3>Car Speed: 0 km/h</h3>
-          <h3>Target Speed: 0 km/h</h3>
-          <h3>Next Target Speed: 0 km/h</h3>
-          <h3>Next Target Speed: 0 km/h</h3>
-          <h3>Status: Go</h3>
-          <h3>Gear: P</h3>
-          <h3>Mode: Manual</h3>
+          <h3 id="text_speed">Speed: - km/h</h3>
+          <h3 id="text_target_spped">Target Speed: - km/h</h3>
+          <h3 id="text_next_target_spped">Next Target Speed: - km/h</h3>
+          <h3 id="text_state">State: -</h3>
         </div>
       </div>
 
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <div class="streamItemContainer">
           <video id="remoteView2"></video>
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <video id="remoteView5"></video>
         </div>
@@ -90,20 +96,19 @@
 
     <!-- UI Second row -->
     <div class="row row-eq-height">
-
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <video id="remoteView3"></video>
         </div>
       </div>
 
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <div class="streamItemContainer">
           <video id="remoteView1"></video>
         </div>
       </div>
 
-      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div class="streamItemContainer">
           <video id="remoteView4"></video>
         </div>
@@ -117,6 +122,66 @@
             <span>Add Operator Camera</span>
           </button>
           <video id="localView1"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- UI Third row -->
+    <div class="row row-eq-height">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <img id="vehicle_steering" src="/img/steering.png"></img>
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <div class="dashboard">
+          <div class="meter meter--rpm meter--big-label"></div>
+          <div class="meter meter--gear"><div>1</div></div>
+          <div class="meter meter--speed"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <div align="left" style="margin-left: 10px">
+          <h4>Accel</h4>
+          <progress id="accel_bar" value="0" max="100"></progress>
+          <h4>Brake</h4>
+          <progress id="brake_bar" value="0" max="100"></progress>
+          <h4>Vehicle Steer</h4>
+          <div class="seekbar">
+            <div class="fill"></div>
+            <div class="handle"></div>
+          </div>
+          <h4>Controller Steer</h4>
+          <div class="seekbar">
+            <div class="cfill"></div>
+            <div class="handle"></div>
+          </div>
+
+          <div class="select-wrap select-circle">
+            <h4>Gear</h4>
+            <select name="gear" id="gear" onChange="select_gear(this);">
+              <option value="0">P</option>
+              <option value="1">N</option>
+              <option value="2">D</option>
+              <option value="3">R</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+        <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="emergencyswitch" checked onchange="select_emergency_button();">
+            <label class="onoffswitch-label" for="emergencyswitch">
+                <span class="emergencyswitch-inner"></span>
+            </label>
+        </div>
+
+        <div class="onoffswitch">
+          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="modeswitch" checked onchange="select_mode_button();">
+          <label class="onoffswitch-label" for="modeswitch">
+              <span class="modeswitch-inner"></span>
+          </label>
         </div>
       </div>
     </div>

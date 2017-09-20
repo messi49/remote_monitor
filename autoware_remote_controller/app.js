@@ -2,8 +2,22 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var mqtt = require('mqtt')
-var mqtt_client  = mqtt.connect('mqtt://localhost:1883')
+var mqtt = require('mqtt');
+var mqtt_client  = mqtt.connect('mqtt://localhost:1883');
+var mqtt_subscribe_topics = ["/can_info", "/state", "/plan"];
+
+function convert_remote_cmd(remote_cmd) {
+  var msg = remote_cmd["steering"] + "," +
+  remote_cmd["accel"] + "," +
+  remote_cmd["brake"] + "," +
+  remote_cmd["gear"] + "," +
+  remote_cmd["gear"] + "," +
+  remote_cmd["blinker"] + "," +
+  remote_cmd["mode"] + "," +
+  remote_cmd["emergency"];
+
+  return msg;
+}
 
 app.use(express.static('public'));
 
@@ -28,7 +42,9 @@ http.listen(9000, function () {
 });
 
 mqtt_client.on('connect', function () {
-  mqtt_client.subscribe('vehicle/#')
+  mqtt_client.subscribe('vehicle/#/can_info');
+  mqtt_client.subscribe('vehicle/#/state');
+  mqtt_client.subscribe('vehicle/#/plan');
 });
 
 io.on('connection', function (socket) {
@@ -67,7 +83,8 @@ io.on('connection', function (socket) {
       var remote_cmd = JSON.parse(message)["remote_cmd"];
       if(remote_cmd != null) {
         console.log(remote_cmd);
-        mqtt_client.publish('vehicle/' + remote_cmd["vehicle_id"] + "/remote_cmd", "TEST");
+        var msg = convert_remote_cmd(remote_cmd);
+        mqtt_client.publish('vehicle/' + remote_cmd["vehicle_id"] + "/remote_cmd", msg);
       }
     }
     catch (e) {
@@ -84,11 +101,14 @@ io.on('connection', function (socket) {
           send_topic_name += "/";
           send_topic_name += split_topic[i];
         }
-        var msg = {};
-        msg.vehicle_info = {};
-        msg.vehicle_info.topic = send_topic_name;
-        msg.vehicle_info.message = message.toString();
-        socket.send(JSON.stringify(msg));
+        if(mqtt_subscribe_topics.indexOf(send_topic_name) > 0) {
+          var msg = {};
+          msg.vehicle_info = {};
+          msg.vehicle_info.topic = send_topic_name;
+          console.log(send_topic_name);
+          msg.vehicle_info.message = message.toString();
+          socket.send(JSON.stringify(msg));
+        }
       }
       else {
         console.log("[NULL] " + topic + ": " + message.toString());

@@ -1,43 +1,57 @@
 // Remote UI
-var UPLOAD_INTERVAL = 100;
-var MAX_STEERING_ANGLE = 600;
-var MAX_ACCEL_STROKE = 1000;
-var MAX_BRAKE_STROKE = 3000;
+const UPLOAD_INTERVAL = 100;
+const MAX_STEERING_ANGLE = 600;
+const MAX_ACCEL_STROKE = 1000;
+const MAX_BRAKE_STROKE = 3000;
+const EMERGENCY_OFF = 1;
+const EMERGENCY_ON = 2;
+const MODE_AUTO_CONTROL = 1;
+const MODE_REMOTE_CONTROL = 2;
 
-var remote_cmd = {
-  "vehicle_id": 0,
-  "emergency": 0,
-  "steering": 0,
-  "accel": 0,
-  "brake": 0,
-  "gear": 0,
-  "mode": 0,
-  "blinker": 0,
+let remote_cmd = {
+  "vehicle_id": -1,
+  "steering": -1,
+  "accel": -1,
+  "brake": -1,
+  "gear": -1,
+  "blinker": -1,
+  "emergency": EMERGENCY_OFF,
+  "mode": MODE_AUTO_CONTROL,
 }
 
-var vehicle_info = {}
+let vehicle_info = {}
+
+// Add onload func
+function addOnload(func)
+{
+    try {
+        window.addEventListener("load", func, false);
+    } catch (e) {
+        // IE用
+        window.attachEvent("onload", func);
+    }
+}
 
 window.onload = function() {
   setSteeringAngle(0);
   setSpeed(0);
   setRPM(0);
-  setGear("-");
+  setGear("1");
 
-  // var count = 0;
-  // var send_cmd = function(){
-  //
-  //   // signalingChannel.send(JSON.stringify({ "remote_cmd": remote_cmd }));
-  //   // console.log(JSON.stringify({ "remote_cmd": remote_cmd }));
-  //   setSteeringAngle(count);
-  //   setSpeed(count);
-	// 	setRPM(1000*count);
-  //   setGear("D");
-  //   setAccelStroke(count, 100);
-  //   setBrakeStroke(count, 100);
-  //   setSteeringPosition(count, 100);
-  //   count++;
-  // }
-  // setInterval(send_cmd, UPLOAD_INTERVAL);
+  var send_cmd = function(){
+    if(remote_cmd["mode"] == MODE_REMOTE_CONTROL || remote_cmd["emergency"] == EMERGENCY_ON) {
+      signalingChannel.send(JSON.stringify({ "remote_cmd": remote_cmd }));
+    }
+    // setSteeringAngle(count);
+    // setSpeed(count);
+		// setRPM(1000*count);
+    // setGear("D");
+    // setAccelStroke(count, 100);
+    // setBrakeStroke(count, 100);
+    // setSteeringPosition(count, 100);
+    // count++;
+  }
+  setInterval(send_cmd, UPLOAD_INTERVAL);
 }
 
 function set_vehicle_info(msg) {
@@ -62,12 +76,12 @@ function select_gear(obj) {
 }
 
 function select_emergency_button(obj) {
-  remote_cmd["emergency"] = remote_cmd["emergency"] == 0 ? 1 : 0;
+  remote_cmd["emergency"] = remote_cmd["emergency"] == EMERGENCY_OFF ? EMERGENCY_ON : EMERGENCY_OFF;
   console.log('select_emergency_button => ' + remote_cmd["emergency"]);
 }
 
 function select_mode_button(obj) {
-  remote_cmd["mode"] = remote_cmd["mode"] == 0 ? 1 : 0;
+  remote_cmd["mode"] = remote_cmd["mode"] == MODE_AUTO_CONTROL ? MODE_REMOTE_CONTROL : MODE_AUTO_CONTROL;
   console.log('select_mode_button => ' + remote_cmd["mode"]);
 }
 
@@ -175,8 +189,11 @@ function setBrakeStroke(value, max_value) {
 }
 
 // Set Steering position
-function setSteeringPosition(angle, max_angle) {
-  var fill = document.querySelector('.fill');
+function setSteeringPosition(angle, max_angle, fill_name) {
+  if(fill_name == null) {
+    fill_name = ".fill";
+  }
+  var fill = document.querySelector(fill_name);
   var target_angle_ratio = 50;
   if (angle == 0) {
     target_angle_ratio = 50;
@@ -194,7 +211,7 @@ function setSteeringPosition(angle, max_angle) {
       target_angle_ratio = 0;
     }
     else {
-      target_angle_ratio = 50 - 50 * (angle / max_angle);
+      target_angle_ratio = 50 + 50 * (angle / max_angle);
     }
   }
   fill.style.width = target_angle_ratio + '%';
