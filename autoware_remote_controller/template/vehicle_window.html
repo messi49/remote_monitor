@@ -19,6 +19,7 @@
   <script src="socket.io/socket.io.js"></script>
   <script src="/js/webrtc_polyfill.js"></script>
   <script src="/js/uuid.core.js"></script>
+  <script src="/js/utility.js"></script>
   <script src="/js/remote_ui.js"></script>
 </head>
 
@@ -66,12 +67,10 @@
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
         <div align="left" style="margin-left: 10px">
           <h2><u>Vehicle Info</u><h2>
-          <h3>Car Speed: 0 km/h</h3>
-          <h3>Target Speed: 0 km/h</h3>
-          <h3>Next Target Speed: 0 km/h</h3>
-          <h3>Next Target Speed: 0 km/h</h3>
-          <h3>State: Go</h3>
-          <h3>Mode: Manual</h3>
+          <h3 id="text_speed">Speed: - km/h</h3>
+          <h3 id="text_target_spped">Target Speed: - km/h</h3>
+          <h3 id="text_next_target_spped">Next Target Speed: - km/h</h3>
+          <h3 id="text_state">State: -</h3>
         </div>
       </div>
 
@@ -192,14 +191,14 @@
 
       <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
         <div class="onoffswitch">
-          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="emergencyswitch" onchange="select_emergency_button();">
-          <label class="onoffswitch-label" for="emergencyswitch">
-              <span class="emergencyswitch-inner"></span>
-          </label>
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="emergencyswitch" checked onchange="select_emergency_button();">
+            <label class="onoffswitch-label" for="emergencyswitch">
+                <span class="emergencyswitch-inner"></span>
+            </label>
         </div>
 
         <div class="onoffswitch">
-          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="modeswitch" onchange="select_mode_button();">
+          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="modeswitch" checked onchange="select_mode_button();">
           <label class="onoffswitch-label" for="modeswitch">
               <span class="modeswitch-inner"></span>
           </label>

@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mqtt = require('mqtt')
-var mqtt_client  = mqtt.connect('mqtt://52.185.144.80:1883')
+var mqtt_client  = mqtt.connect('mqtt://localhost:1883')
 
 app.use(express.static('public'));
 
@@ -58,8 +58,19 @@ io.on('connection', function (socket) {
   });
 
   socket.on('message', function (message) {
-    if (socket.roomName) {
-      socket.broadcast.to(socket.roomName).send(message);
+    try{
+      // ROOM
+      if (socket.roomName) {
+        socket.broadcast.to(socket.roomName).send(message);
+      }
+      // REMOTE CMD
+      var remote_cmd = JSON.parse(message)["remote_cmd"];
+      if(remote_cmd != null) {
+        console.log(remote_cmd);
+        mqtt_client.publish('vehicle/' + remote_cmd["vehicle_id"] + "/remote_cmd", "TEST");
+      }
+    }
+    catch (e) {
     }
   });
 
@@ -77,11 +88,10 @@ io.on('connection', function (socket) {
         msg.vehicle_info = {};
         msg.vehicle_info.topic = send_topic_name;
         msg.vehicle_info.message = message.toString();
-        console.log(JSON.stringify(msg));
         socket.send(JSON.stringify(msg));
       }
       else {
-        console.log("[NULL] " + topic + message.toString());
+        console.log("[NULL] " + topic + ": " + message.toString());
         console.log("roomName: " + socket.roomName);
       }
     }

@@ -1,31 +1,55 @@
 // Remote UI
-remote_cmd = {
+var UPLOAD_INTERVAL = 100;
+var MAX_STEERING_ANGLE = 600;
+var MAX_ACCEL_STROKE = 1000;
+var MAX_BRAKE_STROKE = 3000;
+
+var remote_cmd = {
+  "vehicle_id": 0,
   "emergency": 0,
   "steering": 0,
   "accel": 0,
   "brake": 0,
   "gear": 0,
   "mode": 0,
+  "blinker": 0,
 }
+
+var vehicle_info = {}
 
 window.onload = function() {
   setSteeringAngle(0);
   setSpeed(0);
   setRPM(0);
-  setGear("P");
+  setGear("-");
 
-  var count = 0;
-  var countup = function(){
-    setSteeringAngle(count);
-    setSpeed(count);
-		setRPM(1000*count);
-    setGear("D");
-    setAccelStroke(count, 100);
-    setBrakeStroke(count, 100);
-    setSteeringPosition(count, 100);
-    count++;
-  }
-  setInterval(countup, 10);
+  // var count = 0;
+  // var send_cmd = function(){
+  //
+  //   // signalingChannel.send(JSON.stringify({ "remote_cmd": remote_cmd }));
+  //   // console.log(JSON.stringify({ "remote_cmd": remote_cmd }));
+  //   setSteeringAngle(count);
+  //   setSpeed(count);
+	// 	setRPM(1000*count);
+  //   setGear("D");
+  //   setAccelStroke(count, 100);
+  //   setBrakeStroke(count, 100);
+  //   setSteeringPosition(count, 100);
+  //   count++;
+  // }
+  // setInterval(send_cmd, UPLOAD_INTERVAL);
+}
+
+function set_vehicle_info(msg) {
+  vehicle_info = convert_vehcile_info_csv_to_dict(msg);
+
+  setSteeringAngle(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
+  setSteeringPosition(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
+  setSpeed(parseFloat(vehicle_info["speed"]));
+  setRPM(parseFloat(vehicle_info["rpm"]));
+  setGear(vehicle_info["driveshift"]);
+  setAccelStroke(parseFloat(vehicle_info["drivepedal"]), MAX_ACCEL_STROKE);
+  setBrakeStroke(parseFloat(vehicle_info["brakepedal"]), MAX_BRAKE_STROKE);
 }
 
 function select_gear(obj) {
@@ -101,6 +125,7 @@ function setSpeed(speed) {
     target_speed = speed;
   }
   speedMeter.setValue(target_speed);
+  document.getElementById("text_speed").innerHTML = "Speed: " + target_speed + " km/h";
 }
 
 // Set RPM
@@ -290,7 +315,6 @@ var Meter = function Meter($elm, config) {
 	}
 
 	// NEEDLE
-
 	angle = value2angle(config.value);
 
 	$needle = makeElement($elm, "needle", "", {

@@ -58,8 +58,7 @@ btnDialogAddStream.addEventListener('click', addStream);
 deviceList.addEventListener('change', deviceChange);
 
 
-// 処理メソッド -------------
-
+// Process Method -------------
 function setFocusTxtRoomName() {
   setTimeout(function () {
     txtRoomName.focus();
@@ -212,7 +211,6 @@ function clearStreamAll() {
 // ---------------------------
 
 signalingChannel.on('message', function (message) {
-  console.log(message);
   if (message === 'ready') {
     $messageDialog.modal('hide');
     maskPanel.style.display = 'none';
@@ -226,9 +224,14 @@ signalingChannel.on('message', function (message) {
     showMessageDialog(MESSAGE_OVER);
   } else {
     var message = JSON.parse(message);
-    if (message.roomName) {
-      // 部屋に参加した。
+
+    if (message.vehicle_info) {
+      set_vehicle_info(message.vehicle_info);
+    } else if (message.roomName) {
+      // Join the room
+      console.log("Vehicle ID: " + message.roomName);
       roomName = message.roomName;
+      remote_cmd["vehicle_id"] = roomName;
       dialogRoomName.value = roomName;
       showMessageDialog(MESSAGE_WAIT, true);
       dialogRoomName.focus();
@@ -249,8 +252,6 @@ signalingChannel.on('message', function (message) {
           signalingChannel.send(JSON.stringify({ sdp: pc.localDescription }));
         })
         .catch(logError);
-      } else if (message.vehicle_info) {
-        console.log(message);
       } else
         pc.setRemoteDescription(desc).catch(logError);
     } else if (message.candidate) {
