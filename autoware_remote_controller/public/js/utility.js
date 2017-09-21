@@ -53,7 +53,7 @@ function convert_vehcile_info_csv_to_dict(msg) {
   info["light"] = split_msg[48];
   info["gaslevel"] = split_msg[49];
   info["door"] = split_msg[50];
-  info["cluise)"] = split_msg[51];
+  info["cluise"] = split_msg[51];
 
   return info;
 }

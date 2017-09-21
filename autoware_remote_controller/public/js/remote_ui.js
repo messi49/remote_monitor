@@ -3,13 +3,13 @@ const UPLOAD_INTERVAL = 100;
 const MAX_STEERING_ANGLE = 600;
 const MAX_ACCEL_STROKE = 1000;
 const MAX_BRAKE_STROKE = 3000;
-const EMERGENCY_OFF = 1;
-const EMERGENCY_ON = 2;
-const MODE_AUTO_CONTROL = 1;
-const MODE_REMOTE_CONTROL = 2;
+const EMERGENCY_OFF = 0;
+const EMERGENCY_ON = 1;
+const MODE_AUTO_CONTROL = 3;
+const MODE_REMOTE_CONTROL = 4;
 
 let remote_cmd = {
-  "vehicle_id": -1,
+  "vehicle_id": 1,
   "steering": -1,
   "accel": -1,
   "brake": -1,
@@ -17,9 +17,11 @@ let remote_cmd = {
   "blinker": -1,
   "emergency": EMERGENCY_OFF,
   "mode": MODE_AUTO_CONTROL,
+  "hev_mode": -1,
 }
 
 let vehicle_info = {}
+let publish_flag = false;
 
 // Add onload func
 function addOnload(func)
@@ -39,8 +41,9 @@ window.onload = function() {
   setGear("1");
 
   var send_cmd = function(){
-    if(remote_cmd["mode"] == MODE_REMOTE_CONTROL || remote_cmd["emergency"] == EMERGENCY_ON) {
+    if(remote_cmd["mode"] == MODE_REMOTE_CONTROL || remote_cmd["emergency"] == EMERGENCY_ON || publish_flag) {
       signalingChannel.send(JSON.stringify({ "remote_cmd": remote_cmd }));
+      publish_flag = false;
     }
     // setSteeringAngle(count);
     // setSpeed(count);
@@ -78,11 +81,13 @@ function select_gear(obj) {
 function select_emergency_button(obj) {
   remote_cmd["emergency"] = remote_cmd["emergency"] == EMERGENCY_OFF ? EMERGENCY_ON : EMERGENCY_OFF;
   console.log('select_emergency_button => ' + remote_cmd["emergency"]);
+  publish_flag = true;
 }
 
 function select_mode_button(obj) {
   remote_cmd["mode"] = remote_cmd["mode"] == MODE_AUTO_CONTROL ? MODE_REMOTE_CONTROL : MODE_AUTO_CONTROL;
   console.log('select_mode_button => ' + remote_cmd["mode"]);
+  publish_flag = true;
 }
 
 // Rotate Image
