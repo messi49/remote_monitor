@@ -14,14 +14,14 @@ const TOPIC_TARGET_VELOCITY  = "/target_velocity"
 
 let remote_cmd = {
   "vehicle_id": 1,
-  "steering": -1,
-  "accel": -1,
-  "brake": -1,
-  "gear": -1,
-  "blinker": -1,
+  "steering": 0,
+  "accel": 0,
+  "brake": 0,
+  "gear": 0,
+  "blinker": 0,
   "emergency": EMERGENCY_OFF,
   "mode": MODE_AUTO_CONTROL,
-  "hev_mode": -1,
+  "hev_mode": 0,
 }
 
 let vehicle_info = {}
