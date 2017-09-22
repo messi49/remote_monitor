@@ -184,8 +184,11 @@ function setGear(gear) {
 }
 
 // Set Accel Stroke
-function setAccelStroke(value, max_value) {
-  var accel_bar = document.getElementById('accel_bar');
+function setAccelStroke(value, max_value, bar_id) {
+  if(bar_id == null) {
+    bar_id = 'accel_bar'
+  }
+  var accel_bar = document.getElementById(bar_id);
   var target_value = 0;
   if (max_value != null) {
     target_value = 100 * value / max_value;
@@ -197,8 +200,11 @@ function setAccelStroke(value, max_value) {
 }
 
 // Set Brake Stroke
-function setBrakeStroke(value, max_value) {
-  var brake_bar = document.getElementById('brake_bar');
+function setBrakeStroke(value, max_value, bar_id) {
+  if(bar_id == null) {
+    bar_id = 'brake_bar'
+  }
+  var brake_bar = document.getElementById(bar_id);
   var target_value = 0;
   if (max_value != null) {
     target_value = 100 * value / max_value;
