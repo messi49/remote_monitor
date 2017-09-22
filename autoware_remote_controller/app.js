@@ -4,7 +4,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mqtt = require('mqtt');
 var mqtt_client  = mqtt.connect('mqtt://localhost:1883');
-var mqtt_subscribe_topics = ["/can_info", "/state", "/plan"];
+var mqtt_subscribe_topics = ["/can_info", "/state", "/target_velocity", "/current_velocity"];
 
 function convert_remote_cmd(remote_cmd) {
   var msg = remote_cmd["steering"] + "," +
@@ -17,6 +17,12 @@ function convert_remote_cmd(remote_cmd) {
   remote_cmd["emergency"];
 
   return msg;
+}
+
+function set_subscribe_topics(mqtt_client, vehicle_id, mqtt_subscribe_topics) {
+  for(topic of mqtt_subscribe_topics) {
+    mqtt_client.subscribe('vehicle/' + vehicle_id + topic);
+  }
 }
 
 app.use(express.static('public'));
@@ -42,9 +48,8 @@ http.listen(9000, function () {
 });
 
 mqtt_client.on('connect', function () {
-  mqtt_client.subscribe('vehicle/#/can_info');
-  mqtt_client.subscribe('vehicle/#/state');
-  mqtt_client.subscribe('vehicle/#/plan');
+  // Develop
+  // set_subscribe_topics(mqtt_client, "+", mqtt_subscribe_topics);
 });
 
 io.on('connection', function (socket) {
@@ -58,6 +63,8 @@ io.on('connection', function (socket) {
       socket.join(roomName);
       socket.roomName = roomName;
       socket.send('{"roomName": "' + roomName + '"}');
+      // Set MQTT Subscribe Topic
+      set_subscribe_topics(mqtt_client, roomName, mqtt_subscribe_topics);
       console.log("roomName: "  + roomName);
       var roomMemberCount = io.sockets.adapter.rooms[roomName].length;
       if (roomMemberCount === 2) {
@@ -82,7 +89,6 @@ io.on('connection', function (socket) {
       // REMOTE CMD
       var remote_cmd = JSON.parse(message)["remote_cmd"];
       if(remote_cmd != null) {
-        console.log(remote_cmd);
         var msg = convert_remote_cmd(remote_cmd);
         console.log('vehicle/' + remote_cmd["vehicle_id"] + "/remote_cmd");
         mqtt_client.publish('vehicle/' + remote_cmd["vehicle_id"] + "/remote_cmd", msg);
@@ -96,17 +102,15 @@ io.on('connection', function (socket) {
     try {
       var split_topic = topic.split("/");
       if (socket.roomName != null && socket.roomName == split_topic[1]) {
-        console.log(topic + ": " + message.toString())
         var send_topic_name = "";
         for (var i = 2; i < split_topic.length; i++) {
           send_topic_name += "/";
           send_topic_name += split_topic[i];
         }
-        if(mqtt_subscribe_topics.indexOf(send_topic_name) > 0) {
+        if(mqtt_subscribe_topics.indexOf(send_topic_name) >= 0) {
           var msg = {};
           msg.vehicle_info = {};
           msg.vehicle_info.topic = send_topic_name;
-          console.log(send_topic_name);
           msg.vehicle_info.message = message.toString();
           socket.send(JSON.stringify(msg));
         }

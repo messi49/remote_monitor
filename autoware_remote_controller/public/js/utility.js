@@ -1,7 +1,7 @@
 
-function convert_vehcile_info_csv_to_dict(msg) {
+function convert_can_info_csv_to_dict(msg) {
   var info = {};
-  split_msg = msg["message"].split(",");
+  split_msg = msg.split(",");
   info["tm"] = split_msg[0];
   info["devmode"] = split_msg[1];
   info["drvcontmode"] = split_msg[2];

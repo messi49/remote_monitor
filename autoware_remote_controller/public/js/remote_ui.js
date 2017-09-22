@@ -7,6 +7,10 @@ const EMERGENCY_OFF = 0;
 const EMERGENCY_ON = 1;
 const MODE_AUTO_CONTROL = 3;
 const MODE_REMOTE_CONTROL = 4;
+const TOPIC_CAN_INFO = "/can_info"
+const TOPIC_STATE = "/state"
+const TOPIC_CURRENT_VELOCITY = "/current_velocity"
+const TOPIC_TARGET_VELOCITY  = "/target_velocity"
 
 let remote_cmd = {
   "vehicle_id": 1,
@@ -58,15 +62,27 @@ window.onload = function() {
 }
 
 function set_vehicle_info(msg) {
-  vehicle_info = convert_vehcile_info_csv_to_dict(msg);
+  if(msg["topic"] == TOPIC_CAN_INFO) {
+    vehicle_info = convert_can_info_csv_to_dict(msg["message"]);
 
-  setSteeringAngle(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
-  setSteeringPosition(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
-  setSpeed(parseFloat(vehicle_info["speed"]));
-  setRPM(parseFloat(vehicle_info["rpm"]));
-  setGear(vehicle_info["driveshift"]);
-  setAccelStroke(parseFloat(vehicle_info["drivepedal"]), MAX_ACCEL_STROKE);
-  setBrakeStroke(parseFloat(vehicle_info["brakepedal"]), MAX_BRAKE_STROKE);
+    setSteeringAngle(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
+    setSteeringPosition(parseFloat(vehicle_info["angle"]), MAX_STEERING_ANGLE);
+    setSpeed(parseFloat(vehicle_info["speed"]));
+    setRPM(parseFloat(vehicle_info["rpm"]));
+    setGear(vehicle_info["driveshift"]);
+    setAccelStroke(parseFloat(vehicle_info["drivepedal"]), MAX_ACCEL_STROKE);
+    setBrakeStroke(parseFloat(vehicle_info["brakepedal"]), MAX_BRAKE_STROKE);
+  }
+  else if(msg["topic"] == TOPIC_STATE) {
+    document.getElementById("text_state").innerHTML = "State: " + msg["message"];
+  }
+  else if(msg["topic"] == TOPIC_CURRENT_VELOCITY) {
+    document.getElementById("text_target_speed").innerHTML = "Current Target Speed: " + msg["message"] + " km/h";
+  }
+  else if(msg["topic"] == TOPIC_TARGET_VELOCITY) {
+    var velocity_sets = msg["message"].split(",");
+    document.getElementById("text_next_target_speed").innerHTML = "Next Target Speed: " + velocity_sets[5] + " km/h";
+  }
 }
 
 function select_gear(obj) {

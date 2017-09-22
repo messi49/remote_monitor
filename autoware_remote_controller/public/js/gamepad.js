@@ -11,6 +11,7 @@ let loopID;
 
 addOnload(
   function checkGamepads() {
+    console.log("Init Gamepad");
     var gamepadList = navigator.getGamepads();
 
     for(var i=0; i<gamepadList.length; i++) {
