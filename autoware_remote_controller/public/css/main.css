@@ -36,7 +36,7 @@ header {
 .row {
   width: 100%;
   height: 17vw;
-  margin-bottom: 10px;
+  margin: 5px;
 }
 
 .row-eq-height {
@@ -44,10 +44,21 @@ header {
   flex-wrap: wrap;
 }
 
+.row-top {
+  height: 15%;
+}
+
+.row-center {
+  height: 55%;
+}
+.row-bottom {
+  height: 20%;
+}
+
 img#vehicle_steering {
   height: 100%;
   margin-left: 3vw;
-  margin: 10px;
+  margin: 5px;
 }
 
 
@@ -152,10 +163,10 @@ img#vehicle_steering {
 
 .userContainer {
   position: relative;
-  margin: 10px 0;
+  margin: 5px 0;
   width: 100%;
   padding: 5px;
-  height: calc((100% / 2) - 10px);
+  height: calc((100% / 2) - 5px);
   background: white;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
 }
@@ -188,8 +199,8 @@ img#vehicle_steering {
 
 video {
   position: absolute;
-  max-width: calc(100% - 10px);
-  max-height: calc(100% - 10px);
+  max-width: calc(100% - 5px);
+  max-height: calc(100% - 5px);
   top: 50%;
   left: 50%;
   height: 100%;
