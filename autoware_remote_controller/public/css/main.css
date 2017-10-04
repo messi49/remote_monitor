@@ -45,14 +45,14 @@ header {
 }
 
 .row-top {
-  height: 15%;
+  height: 25%;
 }
 
 .row-center {
-  height: 55%;
+  height: 48%;
 }
 .row-bottom {
-  height: 20%;
+  height: 22%;
 }
 
 img#vehicle_steering {
@@ -60,9 +60,6 @@ img#vehicle_steering {
   margin-left: 3vw;
   margin: 5px;
 }
-
-
-/*height:calc(100vw * 9 / 16);*/
 
 #maskPanel {
   position: absolute;

@@ -49,14 +49,6 @@ window.onload = function() {
       signalingChannel.send(JSON.stringify({ "remote_cmd": remote_cmd }));
       publish_flag = false;
     }
-    // setSteeringAngle(count);
-    // setSpeed(count);
-		// setRPM(1000*count);
-    // setGear("D");
-    // setAccelStroke(count, 100);
-    // setBrakeStroke(count, 100);
-    // setSteeringPosition(count, 100);
-    // count++;
   }
   setInterval(send_cmd, UPLOAD_INTERVAL);
 }

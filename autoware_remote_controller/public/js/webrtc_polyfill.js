@@ -25,10 +25,6 @@ navigator.mediaDevices.enumerateDevices =
 navigator.mediaDevices.getSupportedConstraints =
   navigator.mediaDevices.getSupportedConstraints ||
   function () {
-    // getSupportedConstraints() の PolyFill は
-    // getSupportedConstraints() 戻り値のメンバーを把握していないため、=
-    // メンバーは Edge と Firefox Nightly で実行して戻ってきた値のメンバーをまとめたもの。
-    // Chrome でやってみた経験からできたものを true にできなかったものを false に設定してます。
     return {
       aspectRatio: false,
       browserWindow: false,
@@ -54,9 +50,6 @@ var orgRTCPeerConnection =
   window.mozRTCPeerConnection;
 
 if (orgRTCPeerConnection.prototype.createOffer.length) {
-  // オリジナルの RTCPeerConnection をラップし、
-  // コールバックベースのメソッドはプロミスベースに置き換える
-
   window.RTCPeerConnection = function (configuration) {
     this.orgPC = new orgRTCPeerConnection(configuration);
     var that = this;
@@ -161,7 +154,6 @@ if (orgRTCPeerConnection.prototype.createOffer.length) {
   window.RTCPeerConnection = orgRTCPeerConnection;
 }
 
-// videoやaudioタグにsrcObjectプロパティを実装
 if (!('srcObject' in HTMLMediaElement.prototype)) {
   if (!('mozSrcObject' in HTMLMediaElement.prototype)) {
     HTMLMediaElement.prototype.__defineGetter__('srcObject', function (stream) {
@@ -180,4 +172,3 @@ if (!('srcObject' in HTMLMediaElement.prototype)) {
     });
   }
 }
-
